@@ -30,8 +30,8 @@ interface BridgeInterface extends ethers.utils.Interface {
     "receiveForeign(uint256,address,uint256)": FunctionFragment;
     "receiveNative(uint256,address,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "sendNative(uint256)": FunctionFragment;
-    "sendWrapped(uint256)": FunctionFragment;
+    "sendNative(uint256,uint256)": FunctionFragment;
+    "sendWrapped(uint256,uint256)": FunctionFragment;
     "setOutflowLimit(uint256)": FunctionFragment;
     "threshold()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -75,11 +75,11 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "sendNative",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "sendWrapped",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setOutflowLimit",
@@ -198,8 +198,8 @@ interface BridgeInterface extends ethers.utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "QuorumFailure(uint256)": EventFragment;
-    "Transfer(uint256,uint256,address,uint256)": EventFragment;
-    "Unfreeze(uint256,uint256,address,uint256)": EventFragment;
+    "Transfer(uint256,uint256,uint256,address,uint256)": EventFragment;
+    "Unfreeze(uint256,uint256,uint256,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
 
@@ -222,8 +222,9 @@ export type QuorumFailureEvent = TypedEvent<
 >;
 
 export type TransferEvent = TypedEvent<
-  [BigNumber, BigNumber, string, BigNumber] & {
+  [BigNumber, BigNumber, BigNumber, string, BigNumber] & {
     actionId: BigNumber;
+    chainId: BigNumber;
     txFees: BigNumber;
     to: string;
     value: BigNumber;
@@ -231,8 +232,9 @@ export type TransferEvent = TypedEvent<
 >;
 
 export type UnfreezeEvent = TypedEvent<
-  [BigNumber, BigNumber, string, BigNumber] & {
+  [BigNumber, BigNumber, BigNumber, string, BigNumber] & {
     actionId: BigNumber;
+    chainId: BigNumber;
     txFees: BigNumber;
     to: string;
     value: BigNumber;
@@ -321,11 +323,13 @@ export class Bridge extends BaseContract {
 
     sendNative(
       value: BigNumberish,
+      chainId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     sendWrapped(
       value: BigNumberish,
+      chainId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -422,11 +426,13 @@ export class Bridge extends BaseContract {
 
   sendNative(
     value: BigNumberish,
+    chainId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   sendWrapped(
     value: BigNumberish,
+    chainId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -517,9 +523,17 @@ export class Bridge extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    sendNative(value: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    sendNative(
+      value: BigNumberish,
+      chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    sendWrapped(value: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    sendWrapped(
+      value: BigNumberish,
+      chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setOutflowLimit(
       amount: BigNumberish,
@@ -607,44 +621,72 @@ export class Bridge extends BaseContract {
       actionId?: null
     ): TypedEventFilter<[BigNumber], { actionId: BigNumber }>;
 
-    "Transfer(uint256,uint256,address,uint256)"(
+    "Transfer(uint256,uint256,uint256,address,uint256)"(
       actionId?: null,
+      chainId?: null,
       txFees?: null,
       to?: null,
       value?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber, string, BigNumber],
-      { actionId: BigNumber; txFees: BigNumber; to: string; value: BigNumber }
+      [BigNumber, BigNumber, BigNumber, string, BigNumber],
+      {
+        actionId: BigNumber;
+        chainId: BigNumber;
+        txFees: BigNumber;
+        to: string;
+        value: BigNumber;
+      }
     >;
 
     Transfer(
       actionId?: null,
+      chainId?: null,
       txFees?: null,
       to?: null,
       value?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber, string, BigNumber],
-      { actionId: BigNumber; txFees: BigNumber; to: string; value: BigNumber }
+      [BigNumber, BigNumber, BigNumber, string, BigNumber],
+      {
+        actionId: BigNumber;
+        chainId: BigNumber;
+        txFees: BigNumber;
+        to: string;
+        value: BigNumber;
+      }
     >;
 
-    "Unfreeze(uint256,uint256,address,uint256)"(
+    "Unfreeze(uint256,uint256,uint256,address,uint256)"(
       actionId?: null,
+      chainId?: null,
       txFees?: null,
       to?: null,
       value?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber, string, BigNumber],
-      { actionId: BigNumber; txFees: BigNumber; to: string; value: BigNumber }
+      [BigNumber, BigNumber, BigNumber, string, BigNumber],
+      {
+        actionId: BigNumber;
+        chainId: BigNumber;
+        txFees: BigNumber;
+        to: string;
+        value: BigNumber;
+      }
     >;
 
     Unfreeze(
       actionId?: null,
+      chainId?: null,
       txFees?: null,
       to?: null,
       value?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber, string, BigNumber],
-      { actionId: BigNumber; txFees: BigNumber; to: string; value: BigNumber }
+      [BigNumber, BigNumber, BigNumber, string, BigNumber],
+      {
+        actionId: BigNumber;
+        chainId: BigNumber;
+        txFees: BigNumber;
+        to: string;
+        value: BigNumber;
+      }
     >;
 
     "Unpaused(address)"(
@@ -691,11 +733,13 @@ export class Bridge extends BaseContract {
 
     sendNative(
       value: BigNumberish,
+      chainId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     sendWrapped(
       value: BigNumberish,
+      chainId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -793,11 +837,13 @@ export class Bridge extends BaseContract {
 
     sendNative(
       value: BigNumberish,
+      chainId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     sendWrapped(
       value: BigNumberish,
+      chainId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
