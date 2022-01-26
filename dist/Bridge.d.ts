@@ -22,31 +22,34 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface BridgeInterface extends ethers.utils.Interface {
   functions: {
+    "HALF_Q()": FunctionFragment;
+    "Q()": FunctionFragment;
     "dailyOutflowLimit()": FunctionFragment;
     "graceUserOutflow(address,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "pauseBridge()": FunctionFragment;
     "paused()": FunctionFragment;
-    "receiveForeign(uint256,address,uint256)": FunctionFragment;
-    "receiveNative(uint256,address,uint256)": FunctionFragment;
+    "receiveForeign(uint256,address,uint256,uint256,address)": FunctionFragment;
+    "receiveNative(uint256,address,uint256,uint256,address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "sendNative(uint256,uint256)": FunctionFragment;
     "sendWrapped(uint256,uint256)": FunctionFragment;
     "setOutflowLimit(uint256)": FunctionFragment;
-    "threshold()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "txFees()": FunctionFragment;
     "unpauseBridge()": FunctionFragment;
     "vPAD()": FunctionFragment;
-    "validateAddValidator(uint256,address)": FunctionFragment;
-    "validateRemoveValidator(uint256,address)": FunctionFragment;
-    "validateSetThreshold(uint256,uint16)": FunctionFragment;
-    "validateUnpauseBridge(uint256)": FunctionFragment;
-    "validateUpdateOwner(uint256,address)": FunctionFragment;
-    "validateWithdrawFees(uint256)": FunctionFragment;
+    "validateUnpauseBridge(uint256,uint256,address)": FunctionFragment;
+    "validateUpdateOwner(uint256,address,uint256,address)": FunctionFragment;
+    "validatorPKX()": FunctionFragment;
+    "validatorPKYParity()": FunctionFragment;
+    "verifySignature(uint256,uint8,uint256,uint256,address)": FunctionFragment;
     "wToken()": FunctionFragment;
+    "withdrawFees(uint256,uint256,address)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "HALF_Q", values?: undefined): string;
+  encodeFunctionData(functionFragment: "Q", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "dailyOutflowLimit",
     values?: undefined
@@ -63,11 +66,11 @@ interface BridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "receiveForeign",
-    values: [BigNumberish, string, BigNumberish]
+    values: [BigNumberish, string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "receiveNative",
-    values: [BigNumberish, string, BigNumberish]
+    values: [BigNumberish, string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -85,7 +88,6 @@ interface BridgeInterface extends ethers.utils.Interface {
     functionFragment: "setOutflowLimit",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "threshold", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
@@ -97,31 +99,33 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "vPAD", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "validateAddValidator",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "validateRemoveValidator",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "validateSetThreshold",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "validateUnpauseBridge",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "validateUpdateOwner",
-    values: [BigNumberish, string]
+    values: [BigNumberish, string, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "validateWithdrawFees",
-    values: [BigNumberish]
+    functionFragment: "validatorPKX",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "validatorPKYParity",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "verifySignature",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "wToken", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFees",
+    values: [BigNumberish, BigNumberish, string]
+  ): string;
 
+  decodeFunctionResult(functionFragment: "HALF_Q", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "Q", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "dailyOutflowLimit",
     data: BytesLike
@@ -157,7 +161,6 @@ interface BridgeInterface extends ethers.utils.Interface {
     functionFragment: "setOutflowLimit",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "threshold", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -169,18 +172,6 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "vPAD", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "validateAddValidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "validateRemoveValidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "validateSetThreshold",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "validateUnpauseBridge",
     data: BytesLike
   ): Result;
@@ -189,15 +180,26 @@ interface BridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "validateWithdrawFees",
+    functionFragment: "validatorPKX",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "validatorPKYParity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "verifySignature",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "wToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFees",
+    data: BytesLike
+  ): Result;
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
-    "QuorumFailure(uint256)": EventFragment;
     "Transfer(uint256,uint256,uint256,address,uint256)": EventFragment;
     "Unfreeze(uint256,uint256,uint256,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
@@ -205,7 +207,6 @@ interface BridgeInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "QuorumFailure"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unfreeze"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
@@ -216,10 +217,6 @@ export type OwnershipTransferredEvent = TypedEvent<
 >;
 
 export type PausedEvent = TypedEvent<[string] & { account: string }>;
-
-export type QuorumFailureEvent = TypedEvent<
-  [BigNumber] & { actionId: BigNumber }
->;
 
 export type TransferEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, string, BigNumber] & {
@@ -287,6 +284,10 @@ export class Bridge extends BaseContract {
   interface: BridgeInterface;
 
   functions: {
+    HALF_Q(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    Q(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     dailyOutflowLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     graceUserOutflow(
@@ -307,6 +308,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -314,6 +317,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -338,8 +343,6 @@ export class Bridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    threshold(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -353,42 +356,47 @@ export class Bridge extends BaseContract {
 
     vPAD(overrides?: CallOverrides): Promise<[string]>;
 
-    validateAddValidator(
-      actionId: BigNumberish,
-      newValidator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    validateRemoveValidator(
-      actionId: BigNumberish,
-      oldValidator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    validateSetThreshold(
-      actionId: BigNumberish,
-      newThreshold: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     validateUnpauseBridge(
       actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     validateUpdateOwner(
       actionId: BigNumberish,
       newOwner: string,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    validateWithdrawFees(
-      actionId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    validatorPKX(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    validatorPKYParity(overrides?: CallOverrides): Promise<[number]>;
+
+    verifySignature(
+      signingPubKeyX: BigNumberish,
+      pubKeyYParity: BigNumberish,
+      signature: BigNumberish,
+      msgHash: BigNumberish,
+      nonceTimesGeneratorAddress: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     wToken(overrides?: CallOverrides): Promise<[string]>;
+
+    withdrawFees(
+      actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
+
+  HALF_Q(overrides?: CallOverrides): Promise<BigNumber>;
+
+  Q(overrides?: CallOverrides): Promise<BigNumber>;
 
   dailyOutflowLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -410,6 +418,8 @@ export class Bridge extends BaseContract {
     actionId: BigNumberish,
     to: string,
     value: BigNumberish,
+    sig: BigNumberish,
+    proofAddr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -417,6 +427,8 @@ export class Bridge extends BaseContract {
     actionId: BigNumberish,
     to: string,
     value: BigNumberish,
+    sig: BigNumberish,
+    proofAddr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -441,8 +453,6 @@ export class Bridge extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  threshold(overrides?: CallOverrides): Promise<BigNumber>;
-
   transferOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -456,43 +466,48 @@ export class Bridge extends BaseContract {
 
   vPAD(overrides?: CallOverrides): Promise<string>;
 
-  validateAddValidator(
-    actionId: BigNumberish,
-    newValidator: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  validateRemoveValidator(
-    actionId: BigNumberish,
-    oldValidator: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  validateSetThreshold(
-    actionId: BigNumberish,
-    newThreshold: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   validateUnpauseBridge(
     actionId: BigNumberish,
+    sig: BigNumberish,
+    proofAddr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   validateUpdateOwner(
     actionId: BigNumberish,
     newOwner: string,
+    sig: BigNumberish,
+    proofAddr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  validateWithdrawFees(
-    actionId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  validatorPKX(overrides?: CallOverrides): Promise<BigNumber>;
+
+  validatorPKYParity(overrides?: CallOverrides): Promise<number>;
+
+  verifySignature(
+    signingPubKeyX: BigNumberish,
+    pubKeyYParity: BigNumberish,
+    signature: BigNumberish,
+    msgHash: BigNumberish,
+    nonceTimesGeneratorAddress: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   wToken(overrides?: CallOverrides): Promise<string>;
 
+  withdrawFees(
+    actionId: BigNumberish,
+    sig: BigNumberish,
+    proofAddr: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
+    HALF_Q(overrides?: CallOverrides): Promise<BigNumber>;
+
+    Q(overrides?: CallOverrides): Promise<BigNumber>;
+
     dailyOutflowLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
     graceUserOutflow(
@@ -511,6 +526,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -518,6 +535,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -540,8 +559,6 @@ export class Bridge extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    threshold(overrides?: CallOverrides): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: string,
       overrides?: CallOverrides
@@ -553,41 +570,42 @@ export class Bridge extends BaseContract {
 
     vPAD(overrides?: CallOverrides): Promise<string>;
 
-    validateAddValidator(
-      actionId: BigNumberish,
-      newValidator: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    validateRemoveValidator(
-      actionId: BigNumberish,
-      oldValidator: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    validateSetThreshold(
-      actionId: BigNumberish,
-      newThreshold: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     validateUnpauseBridge(
       actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     validateUpdateOwner(
       actionId: BigNumberish,
       newOwner: string,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    validateWithdrawFees(
-      actionId: BigNumberish,
+    validatorPKX(overrides?: CallOverrides): Promise<BigNumber>;
+
+    validatorPKYParity(overrides?: CallOverrides): Promise<number>;
+
+    verifySignature(
+      signingPubKeyX: BigNumberish,
+      pubKeyYParity: BigNumberish,
+      signature: BigNumberish,
+      msgHash: BigNumberish,
+      nonceTimesGeneratorAddress: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
 
     wToken(overrides?: CallOverrides): Promise<string>;
+
+    withdrawFees(
+      actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -612,14 +630,6 @@ export class Bridge extends BaseContract {
     ): TypedEventFilter<[string], { account: string }>;
 
     Paused(account?: null): TypedEventFilter<[string], { account: string }>;
-
-    "QuorumFailure(uint256)"(
-      actionId?: null
-    ): TypedEventFilter<[BigNumber], { actionId: BigNumber }>;
-
-    QuorumFailure(
-      actionId?: null
-    ): TypedEventFilter<[BigNumber], { actionId: BigNumber }>;
 
     "Transfer(uint256,uint256,uint256,address,uint256)"(
       actionId?: null,
@@ -697,6 +707,10 @@ export class Bridge extends BaseContract {
   };
 
   estimateGas: {
+    HALF_Q(overrides?: CallOverrides): Promise<BigNumber>;
+
+    Q(overrides?: CallOverrides): Promise<BigNumber>;
+
     dailyOutflowLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
     graceUserOutflow(
@@ -717,6 +731,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -724,6 +740,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -748,8 +766,6 @@ export class Bridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    threshold(overrides?: CallOverrides): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -763,44 +779,49 @@ export class Bridge extends BaseContract {
 
     vPAD(overrides?: CallOverrides): Promise<BigNumber>;
 
-    validateAddValidator(
-      actionId: BigNumberish,
-      newValidator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    validateRemoveValidator(
-      actionId: BigNumberish,
-      oldValidator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    validateSetThreshold(
-      actionId: BigNumberish,
-      newThreshold: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     validateUnpauseBridge(
       actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     validateUpdateOwner(
       actionId: BigNumberish,
       newOwner: string,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    validateWithdrawFees(
-      actionId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    validatorPKX(overrides?: CallOverrides): Promise<BigNumber>;
+
+    validatorPKYParity(overrides?: CallOverrides): Promise<BigNumber>;
+
+    verifySignature(
+      signingPubKeyX: BigNumberish,
+      pubKeyYParity: BigNumberish,
+      signature: BigNumberish,
+      msgHash: BigNumberish,
+      nonceTimesGeneratorAddress: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     wToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdrawFees(
+      actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    HALF_Q(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    Q(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     dailyOutflowLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     graceUserOutflow(
@@ -821,6 +842,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -828,6 +851,8 @@ export class Bridge extends BaseContract {
       actionId: BigNumberish,
       to: string,
       value: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -852,8 +877,6 @@ export class Bridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    threshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -867,40 +890,43 @@ export class Bridge extends BaseContract {
 
     vPAD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    validateAddValidator(
-      actionId: BigNumberish,
-      newValidator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    validateRemoveValidator(
-      actionId: BigNumberish,
-      oldValidator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    validateSetThreshold(
-      actionId: BigNumberish,
-      newThreshold: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     validateUnpauseBridge(
       actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     validateUpdateOwner(
       actionId: BigNumberish,
       newOwner: string,
+      sig: BigNumberish,
+      proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    validateWithdrawFees(
-      actionId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    validatorPKX(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    validatorPKYParity(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    verifySignature(
+      signingPubKeyX: BigNumberish,
+      pubKeyYParity: BigNumberish,
+      signature: BigNumberish,
+      msgHash: BigNumberish,
+      nonceTimesGeneratorAddress: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     wToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    withdrawFees(
+      actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }
