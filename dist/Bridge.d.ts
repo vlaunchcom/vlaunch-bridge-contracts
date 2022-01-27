@@ -40,6 +40,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "unpauseBridge()": FunctionFragment;
     "vPAD()": FunctionFragment;
     "validateUnpauseBridge(uint256,uint256,address)": FunctionFragment;
+    "validateUpdateGroupKey(uint256,uint8,uint8,uint256,address)": FunctionFragment;
     "validateUpdateOwner(uint256,address,uint256,address)": FunctionFragment;
     "validatorPKX()": FunctionFragment;
     "validatorPKYParity()": FunctionFragment;
@@ -101,6 +102,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "validateUnpauseBridge",
     values: [BigNumberish, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "validateUpdateGroupKey",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "validateUpdateOwner",
@@ -173,6 +178,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "vPAD", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "validateUnpauseBridge",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "validateUpdateGroupKey",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -363,6 +372,15 @@ export class Bridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    validateUpdateGroupKey(
+      actionId: BigNumberish,
+      _validatorPKX: BigNumberish,
+      _validatorPKYP: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     validateUpdateOwner(
       actionId: BigNumberish,
       newOwner: string,
@@ -473,6 +491,15 @@ export class Bridge extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  validateUpdateGroupKey(
+    actionId: BigNumberish,
+    _validatorPKX: BigNumberish,
+    _validatorPKYP: BigNumberish,
+    sig: BigNumberish,
+    proofAddr: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   validateUpdateOwner(
     actionId: BigNumberish,
     newOwner: string,
@@ -572,6 +599,15 @@ export class Bridge extends BaseContract {
 
     validateUnpauseBridge(
       actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    validateUpdateGroupKey(
+      actionId: BigNumberish,
+      _validatorPKX: BigNumberish,
+      _validatorPKYP: BigNumberish,
       sig: BigNumberish,
       proofAddr: string,
       overrides?: CallOverrides
@@ -786,6 +822,15 @@ export class Bridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    validateUpdateGroupKey(
+      actionId: BigNumberish,
+      _validatorPKX: BigNumberish,
+      _validatorPKYP: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     validateUpdateOwner(
       actionId: BigNumberish,
       newOwner: string,
@@ -892,6 +937,15 @@ export class Bridge extends BaseContract {
 
     validateUnpauseBridge(
       actionId: BigNumberish,
+      sig: BigNumberish,
+      proofAddr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    validateUpdateGroupKey(
+      actionId: BigNumberish,
+      _validatorPKX: BigNumberish,
+      _validatorPKYP: BigNumberish,
       sig: BigNumberish,
       proofAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
