@@ -207,6 +207,8 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "OutflowGrace(address,uint256,uint256)": EventFragment;
+    "OutflowLimitChanged(uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(uint256,uint256,uint256,address,uint256)": EventFragment;
@@ -214,12 +216,26 @@ interface BridgeInterface extends ethers.utils.Interface {
     "Unpaused(address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "OutflowGrace"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutflowLimitChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unfreeze"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
+
+export type OutflowGraceEvent = TypedEvent<
+  [string, BigNumber, BigNumber] & {
+    user: string;
+    newOutflow: BigNumber;
+    until: BigNumber;
+  }
+>;
+
+export type OutflowLimitChangedEvent = TypedEvent<
+  [BigNumber] & { newOutflow: BigNumber }
+>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -645,6 +661,32 @@ export class Bridge extends BaseContract {
   };
 
   filters: {
+    "OutflowGrace(address,uint256,uint256)"(
+      user?: null,
+      newOutflow?: null,
+      until?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber],
+      { user: string; newOutflow: BigNumber; until: BigNumber }
+    >;
+
+    OutflowGrace(
+      user?: null,
+      newOutflow?: null,
+      until?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber],
+      { user: string; newOutflow: BigNumber; until: BigNumber }
+    >;
+
+    "OutflowLimitChanged(uint256)"(
+      newOutflow?: null
+    ): TypedEventFilter<[BigNumber], { newOutflow: BigNumber }>;
+
+    OutflowLimitChanged(
+      newOutflow?: null
+    ): TypedEventFilter<[BigNumber], { newOutflow: BigNumber }>;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
