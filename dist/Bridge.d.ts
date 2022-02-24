@@ -40,7 +40,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "unpauseBridge()": FunctionFragment;
     "vPAD()": FunctionFragment;
     "validateUnpauseBridge(uint256,uint256,address)": FunctionFragment;
-    "validateUpdateGroupKey(uint256,uint8,uint8,uint256,address)": FunctionFragment;
+    "validateUpdateGroupKey(uint256,uint256,uint8,uint256,address)": FunctionFragment;
     "validateUpdateOwner(uint256,address,uint256,address)": FunctionFragment;
     "validatorPKX()": FunctionFragment;
     "validatorPKYParity()": FunctionFragment;
